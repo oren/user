@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/oren/user.png?label=ready&title=Ready)](https://waffle.io/oren/user)
 # User
 
 ## API
