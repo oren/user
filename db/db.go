@@ -1,18 +1,20 @@
 package db
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/google/cayley"
 	_ "github.com/google/cayley/graph/bolt"
+	"io"
 	"log"
-	// "net/http"
+	"net/http"
 )
 
 import "github.com/google/cayley/graph"
 
-type user struct {
-	email    string
-	password string
+type User struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func open() {
@@ -42,7 +44,28 @@ func main() {
 	open()
 }
 
-func Register(u user) {
-	fmt.Println("in db func", u)
-	// fmt.Fprintf(w, "register already (:")
+func AddUser(w http.ResponseWriter, r io.Reader) {
+	fmt.Println("in db func")
+	decoder := json.NewDecoder(r)
+
+	var u User
+	err := decoder.Decode(&u)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(u)
+
+	ok := validEmail(u.Email)
+
+	if !ok {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
+}
+
+func validEmail(email string) bool {
+	fmt.Println("email in func", email)
+	return true
 }

@@ -1,0 +1,5 @@
+noethics | ie. you can do the json decoding from within the db package
+noethics | and just return the user
+noethics | or unmarshal it to an anonymous struct and generate a db.user from it
+noethics | or X number of permutations of those patterns
+personally i would do all the decoding in my db package
