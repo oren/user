@@ -32,3 +32,14 @@ send email with link to a page that allow password change
 curl -X PUT -H 'Content-Type: application/json' -d '{"email":"dan@gmail.com", "password":"somesecret", "new-password":"somenewsecret"}' localhost:3000/change-password
 ```
 
+## Development
+
+### Auto Reload Script
+
+The run.sh script located on the root directory of the repository will allow you to use CompileDaemon to auto compile and reload the web application as soon as you make changes. This allows for faster development. To get started, you need to get the CompileDaemon tool first.
+
+    go get -u github.com/githubnemo/CompileDaemon
+
+Then you can run the run.sh script and it will auto detect changes, compile the app and run it.
+
+    ./run.sh
