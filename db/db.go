@@ -5,10 +5,15 @@ import (
 	"github.com/google/cayley"
 	_ "github.com/google/cayley/graph/bolt"
 	"log"
-	"net/http"
+	// "net/http"
 )
 
 import "github.com/google/cayley/graph"
+
+type user struct {
+	email    string
+	password string
+}
 
 func open() {
 	path := "/tmp/user-db"
@@ -37,6 +42,7 @@ func main() {
 	open()
 }
 
-func Register(w http.ResponseWriter) {
-	fmt.Fprintf(w, "register already (:")
+func Register(u user) {
+	fmt.Println("in db func", u)
+	// fmt.Fprintf(w, "register already (:")
 }
