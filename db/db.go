@@ -17,33 +17,6 @@ type User struct {
 	Password string `json:"password"`
 }
 
-func open() {
-	path := "/tmp/user-db"
-	// Initialize the database
-	graph.InitQuadStore("bolt", path, nil)
-
-	// Open and use the database
-	store, err := cayley.NewGraph("bolt", path, nil)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	store.AddQuad(cayley.Quad("person:sophie", "type", "Person", ""))
-	store.AddQuad(cayley.Quad("person:sophie", "name", "Sophie Grégoire", ""))
-	store.AddQuad(cayley.Quad("person:sophie", "born", "1974", ""))
-	store.AddQuad(cayley.Quad("person:sophie", "lives in", "country:canada", ""))
-
-	store.AddQuad(cayley.Quad("person:justin", "type", "Person", ""))
-	store.AddQuad(cayley.Quad("person:justin", "name", "Justin Trudeau", ""))
-	store.AddQuad(cayley.Quad("person:justin", "born", "1972", ""))
-	store.AddQuad(cayley.Quad("person:justin", "lives in", "country:canada", ""))
-	store.AddQuad(cayley.Quad("person:justin", "in love with", "person:sophie", ""))
-}
-
-func main() {
-	open()
-}
-
 func AddUser(w http.ResponseWriter, r io.Reader) {
 	fmt.Println("in db func")
 	decoder := json.NewDecoder(r)
@@ -63,9 +36,27 @@ func AddUser(w http.ResponseWriter, r io.Reader) {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
+
+	insert(u)
 }
 
 func validEmail(email string) bool {
-	fmt.Println("email in func", email)
+	fmt.Println("validEmail", email)
 	return true
+}
+
+func insert(u User) error {
+	fmt.Println("insert", u)
+	path := "/tmp/user-db"
+	graph.InitQuadStore("bolt", path, nil)
+
+	store, err := cayley.NewGraph("bolt", path, nil)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	store.AddQuad(cayley.Quad("person:sophie", "type", "Person", ""))
+	store.AddQuad(cayley.Quad("person:sophie", "email", "3432432e", ""))
+	return nil
 }
