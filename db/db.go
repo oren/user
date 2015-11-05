@@ -1,62 +1,74 @@
 package db
 
 import (
-	"encoding/json"
-	"fmt"
+	// "encoding/json"
+	// "fmt"
+	// "github.com/Xe/uuid"
 	"github.com/google/cayley"
 	_ "github.com/google/cayley/graph/bolt"
 	"io"
 	"log"
-	"net/http"
 )
 
 import "github.com/google/cayley/graph"
+
+func New(path string) Db {
+	db := Db{location: path}
+	graph.InitQuadStore("bolt", path, nil)
+	store, err := cayley.NewGraph("bolt", path, nil)
+	db.Store = *store
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return db
+}
 
 type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-func AddUser(w http.ResponseWriter, r io.Reader) {
-	fmt.Println("in db func")
-	decoder := json.NewDecoder(r)
+type Db struct {
+	location string
+	Store    cayley.Handle
+}
 
-	var u User
-	err := decoder.Decode(&u)
+func (db Db) AddUser(r io.Reader) (string, error) {
+	return db.location, nil
 
-	if err != nil {
-		panic(err)
-	}
+	// uuid := uuid.NewUUID()
+	// if uuid == nil {
+	// 	log.Fatal("uuid is nil")
+	// }
 
-	fmt.Println(u)
+	// fmt.Println(uuid)
 
-	ok := validEmail(u.Email)
+	// decoder := json.NewDecoder(r)
 
-	if !ok {
-		http.Error(w, "bad request", http.StatusBadRequest)
-		return
-	}
+	// var u User
+	// err := decoder.Decode(&u)
 
-	insert(u)
+	// if err != nil {
+	// 	return "", fmt.Errorf("invalid json")
+	// }
+
+	// fmt.Println(u)
+
+	// ok := validEmail(u.Email)
+
+	// if !ok {
+	// 	return "", fmt.Errorf("invalid email")
+	// }
+
+	// db.Store.AddQuad(cayley.Quad("person:"+uuid.String(), "type", "Person", ""))
+	// store.AddQuad(cayley.Quad("person:UUID", "email", u.email, ""))
+	// store.AddQuad(cayley.Quad("person:UUID", "password", u.password, ""))
+
+	// return db.location, nil
 }
 
 func validEmail(email string) bool {
-	fmt.Println("validEmail", email)
 	return true
-}
-
-func insert(u User) error {
-	fmt.Println("insert", u)
-	path := "/tmp/user-db"
-	graph.InitQuadStore("bolt", path, nil)
-
-	store, err := cayley.NewGraph("bolt", path, nil)
-
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	store.AddQuad(cayley.Quad("person:sophie", "type", "Person", ""))
-	store.AddQuad(cayley.Quad("person:sophie", "email", "3432432e", ""))
-	return nil
 }
