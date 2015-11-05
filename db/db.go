@@ -1,9 +1,9 @@
 package db
 
 import (
-	// "encoding/json"
-	// "fmt"
-	// "github.com/Xe/uuid"
+	"encoding/json"
+	"fmt"
+	"github.com/Xe/uuid"
 	"github.com/google/cayley"
 	_ "github.com/google/cayley/graph/bolt"
 	"io"
@@ -36,37 +36,36 @@ type Db struct {
 }
 
 func (db Db) AddUser(r io.Reader) (string, error) {
-	return db.location, nil
+	uuid := uuid.NewUUID()
 
-	// uuid := uuid.NewUUID()
-	// if uuid == nil {
-	// 	log.Fatal("uuid is nil")
-	// }
+	if uuid == nil {
+		log.Fatal("uuid is nil")
+	}
 
-	// fmt.Println(uuid)
+	fmt.Println(uuid)
 
-	// decoder := json.NewDecoder(r)
+	decoder := json.NewDecoder(r)
 
-	// var u User
-	// err := decoder.Decode(&u)
+	var u User
+	err := decoder.Decode(&u)
 
-	// if err != nil {
-	// 	return "", fmt.Errorf("invalid json")
-	// }
+	if err != nil {
+		return "", fmt.Errorf("invalid json")
+	}
 
-	// fmt.Println(u)
+	fmt.Println(u)
 
-	// ok := validEmail(u.Email)
+	ok := validEmail(u.Email)
 
-	// if !ok {
-	// 	return "", fmt.Errorf("invalid email")
-	// }
+	if !ok {
+		return "", fmt.Errorf("invalid email")
+	}
 
-	// db.Store.AddQuad(cayley.Quad("person:"+uuid.String(), "type", "Person", ""))
+	db.Store.AddQuad(cayley.Quad("person:"+uuid.String(), "type", "Person", ""))
 	// store.AddQuad(cayley.Quad("person:UUID", "email", u.email, ""))
 	// store.AddQuad(cayley.Quad("person:UUID", "password", u.password, ""))
 
-	// return db.location, nil
+	return db.location, nil
 }
 
 func validEmail(email string) bool {

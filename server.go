@@ -7,7 +7,14 @@ import (
 	"net/http"
 )
 
+var path = "/tmp/user-db"
+var store = db.New(path)
+
+func init() {
+}
+
 func main() {
+
 	http.HandleFunc("/health", health)
 	http.HandleFunc("/user", newUser)
 
@@ -24,8 +31,6 @@ func newUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path := "/tmp/user-db"
-	store := db.New(path)
 	output, err := store.AddUser(r.Body)
 
 	if err != nil {
